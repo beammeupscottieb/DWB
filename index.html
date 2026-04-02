@@ -472,42 +472,47 @@
     to   { opacity: 1; }
   }
 
-  @media (max-width: 1024px) {
-    .dir-topbar, .dir-controls, .dir-body { padding-left: 1.25rem; padding-right: 1.25rem; }
-    .gate-title { font-size: 4rem; }
+  /* Card layout — triggered by JS based on actual container width (iframe-safe) */
+  body.compact .dir-topbar,
+  body.compact .dir-controls,
+  body.compact .dir-body { padding-left: 1.25rem; padding-right: 1.25rem; }
 
-    /* Card layout — stack each row vertically so contact info stays visible */
-    table, thead, tbody, tr, th, td { display: block; width: 100%; }
-    thead { display: none; }
+  body.compact table,
+  body.compact thead,
+  body.compact tbody,
+  body.compact tr,
+  body.compact th,
+  body.compact td { display: block; width: 100%; }
 
-    tbody tr {
-      padding: 1rem 1.1rem;
-      margin-bottom: 0;
-      border-bottom: 2px solid var(--stone);
-    }
+  body.compact thead { display: none; }
 
-    tbody td { padding: 0.2rem 0; border: none; }
+  body.compact tbody tr {
+    padding: 1rem 1.1rem;
+    margin-bottom: 0;
+    border-bottom: 2px solid var(--stone);
+  }
 
-    td.col-name {
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
-    }
+  body.compact tbody td { padding: 0.2rem 0; border: none; }
 
-    td.col-text {
-      max-width: 100%;
-      margin-bottom: 0.4rem;
-    }
+  body.compact td.col-name {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
 
-    td.col-contact {
-      display: block;
-      white-space: normal;
-      min-width: unset;
-      margin-top: 0.4rem;
-    }
+  body.compact td.col-text {
+    max-width: 100%;
+    margin-bottom: 0.4rem;
+  }
 
-    .contact-shown a {
-      word-break: break-all;
-    }
+  body.compact td.col-contact {
+    display: block;
+    white-space: normal;
+    min-width: unset;
+    margin-top: 0.4rem;
+  }
+
+  body.compact .contact-shown a {
+    word-break: break-all;
   }
 </style>
 </head>
@@ -768,6 +773,13 @@ function revealContact(btn) {
     currentOpenContact = infoDiv;
   }
 }
+
+// ── RESPONSIVE — detect actual width (iframe-safe, no media query needed) ────
+function checkCompact() {
+  document.body.classList.toggle('compact', document.documentElement.clientWidth < 1024);
+}
+window.addEventListener('resize', checkCompact);
+checkCompact();
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 loadData();
