@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Connection Directory | Leverage · DWB</title>
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+    --cream: #F5EFE6;
+    --periwinkle: #8B9FD4;
+    --brand-yellow: #ECEC7C;
+    --stone: #E2D9CC;
+    --bark: #B5A898;
+    --earth: #7A6E64;
+    --ask-blue: #D4DBE8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--black);
+    min-height: 100vh;
+  }
+
+  /* ── DIRECTORY ──────────────────────────────────── */
+  #directory { display: block; min-height: 100vh; }
+
+  .dir-topbar {
+    background: var(--black);
+    padding: 1.25rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .dir-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    margin-bottom: 0.2rem;
+    font-weight: 500;
+  }
+
+  .dir-heading {
+    font-family: 'League Gothic', sans-serif;
+    font-size: 2.2rem;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .dir-heading .accent { color: var(--periwinkle); }
+
+
+  /* Controls */
+  .dir-controls {
+    background: var(--white);
+    border-bottom: 2px solid var(--stone);
+    padding: 0.85rem 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+
+  /* Ask / Offer toggle */
+  .toggle-group {
+    display: flex;
+    border: 2px solid var(--black);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .toggle-btn {
+    padding: 0.5rem 1.4rem;
+    background: transparent;
+    border: none;
+    font-family: 'League Gothic', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--earth);
+    transition: all 0.15s;
+    line-height: 1;
+  }
+
+  .toggle-btn.active.ask-mode { background: var(--ask-blue); color: var(--black); }
+  .toggle-btn.active.offer-mode { background: var(--brand-yellow); color: var(--black); }
+  .toggle-sep { width: 2px; background: var(--black); flex-shrink: 0; }
+
+  /* Search */
+  .dir-search {
+    flex: 1;
+    min-width: 160px;
+    background: var(--cream);
+    border: 1px solid var(--stone);
+    color: var(--black);
+    padding: 0.5rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .dir-search:focus { border-color: var(--periwinkle); }
+  .dir-search::placeholder { color: var(--bark); }
+
+  /* Tag filters */
+  .tag-filters { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; }
+
+  .tag-filter-btn {
+    padding: 0.38rem 0.85rem;
+    background: transparent;
+    border: 1px solid var(--stone);
+    color: var(--earth);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .tag-filter-btn:hover { border-color: var(--bark); color: var(--black); }
+  .tag-filter-btn.active { background: var(--black); border-color: var(--black); color: var(--white); }
+
+  .dir-filter-hint-bar {
+    background: var(--cream);
+    padding: 0.5rem 2.5rem;
+    border-bottom: 1px solid var(--stone);
+  }
+
+  .dir-filter-hint-bar span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--earth);
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .filter-hint {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: var(--bark);
+    white-space: nowrap;
+    font-style: italic;
+  }
+
+  /* Intro banner */
+  .dir-intro {
+    background: var(--white);
+    padding: 2rem 2.5rem;
+    border-top: 3px solid var(--brand-yellow);
+    border-bottom: 3px solid var(--stone);
+  }
+
+  .dir-intro-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .dir-cta {
+    font-family: 'League Gothic', sans-serif;
+    font-size: 1.6rem;
+    color: var(--black);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.15;
+  }
+
+  .dir-cta .cta-accent { color: var(--periwinkle); }
+
+  .dir-cta-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--earth);
+    margin-top: 0.6rem;
+    line-height: 1.6;
+    font-weight: 300;
+    max-width: 500px;
+  }
+
+  .tag-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .tag-legend-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bark);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .tag-legend-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .tag-legend-badge {
+    display: inline-block;
+    padding: 0.12rem 0.55rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .tag-legend-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    color: var(--earth);
+    font-weight: 300;
+  }
+
+  @media (max-width: 900px) {
+    .dir-intro-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  /* Body */
+  .dir-body {
+    padding: 1.5rem 2.5rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .dir-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .dir-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    color: var(--bark);
+  }
+
+  .dir-count strong { color: var(--earth); font-weight: 500; }
+
+  .mode-badge {
+    font-family: 'League Gothic', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 400;
+    padding: 0.35rem 1.25rem;
+    border: 2px solid var(--black);
+  }
+
+  .mode-badge.ask { background: var(--ask-blue); color: var(--black); }
+  .mode-badge.offer { background: var(--brand-yellow); color: var(--black); }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    border: 2px solid var(--black);
+    background: var(--white);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead { background: var(--black); }
+
+  thead th {
+    padding: 0.8rem 1.1rem;
+    text-align: left;
+    font-family: 'League Gothic', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+  }
+
+  thead th:hover { color: var(--white); }
+  thead th.sorted { color: var(--periwinkle); }
+  thead th:last-child { cursor: default; }
+  thead th:last-child:hover { color: rgba(255,255,255,0.5); }
+
+  .sort-icon { display: inline-block; margin-left: 0.3rem; opacity: 0.4; font-size: 0.7rem; }
+  thead th.sorted .sort-icon { opacity: 1; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--stone);
+    transition: background 0.1s;
+    animation: fadeIn 0.25s ease both;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--cream); }
+
+  tbody td {
+    padding: 0.9rem 1.1rem;
+    vertical-align: top;
+    line-height: 1.5;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Tag badges */
+  .tag-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+
+  .tag-badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.52rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .tag-grow    { background: #E8F2EA; color: #3D7A4A; border: 1px solid #B8D9BF; }
+  .tag-build   { background: #FAE8E3; color: #A84020; border: 1px solid #E8BFB0; }
+  .tag-fund    { background: #FDF0E0; color: #9A6010; border: 1px solid #E8CFB0; }
+  .tag-connect { background: #E8EEF8; color: #2A4E8A; border: 1px solid #B0C2E8; }
+  .tag-thought { background: #F2EAF8; color: #6A2A9A; border: 1px solid #CEB0E8; }
+
+  td.col-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    color: var(--black);
+  }
+
+  td.col-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    color: var(--black);
+    max-width: 420px;
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  td.col-contact {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.73rem;
+    color: var(--earth);
+    white-space: nowrap;
+    min-width: 200px;
+    font-weight: 300;
+    width: 200px;
+    vertical-align: middle;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    background: transparent;
+    border: 1px solid var(--periwinkle);
+    color: var(--periwinkle);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+
+  .reveal-btn:hover { background: var(--periwinkle); color: var(--white); }
+
+  .contact-hidden { display: none; }
+
+  .contact-shown {
+    display: block;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .contact-shown a {
+    color: var(--periwinkle);
+    text-decoration: none;
+    display: block;
+  }
+
+  .contact-shown a:hover { text-decoration: underline; }
+
+  .contact-shown span {
+    display: block;
+    color: var(--earth);
+  }
+
+  td.col-contact a {
+    color: var(--periwinkle);
+    text-decoration: none;
+    display: block;
+    transition: color 0.15s;
+  }
+
+  td.col-contact a:hover { color: var(--black); text-decoration: underline; }
+  td.col-contact span { display: block; }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--white);
+    border: 2px solid var(--black);
+  }
+
+  .empty-title {
+    font-family: 'League Gothic', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--earth);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-sub { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--bark); }
+
+  .dir-footer {
+    background: var(--black);
+    padding: 1.75rem 2.5rem;
+    text-align: center;
+  }
+
+  .dir-footer p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.2);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .dir-footer a { color: var(--periwinkle); text-decoration: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @media (max-width: 700px) {
+    .dir-topbar, .dir-controls, .dir-body { padding-left: 1rem; padding-right: 1rem; }
+
+    /* switch table to card layout on mobile */
+    .table-wrap { border: none; background: transparent; }
+    table, thead, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+
+    tbody tr {
+      background: var(--white);
+      border: 1px solid var(--stone);
+      border-radius: 0;
+      margin-bottom: 0.75rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--stone) !important;
+    }
+
+    tbody td { padding: 0.2rem 0; border: none; }
+    td.col-name {
+      font-family: 'League Gothic', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.15rem;
+    }
+    td.col-text {
+      font-size: 0.82rem;
+      max-width: 100%;
+      color: var(--black);
+      margin-bottom: 0.35rem;
+    }
+    td.col-tags { margin-bottom: 0.35rem; }
+    td.col-contact {
+      display: block !important;
+      margin-top: 0.35rem;
+    }
+    .reveal-btn { width: 100%; text-align: center; padding: 0.5rem; }
+    .contact-shown { margin-top: 0.35rem; }
+  }
+  .loading-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--white);
+    border: 2px solid var(--black);
+  }
+
+  .loading-title {
+    font-family: 'League Gothic', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--earth);
+    margin-bottom: 0.5rem;
+    animation: pulseFade 1.5s ease-in-out infinite;
+  }
+
+  .loading-sub { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--bark); }
+
+  @keyframes pulseFade {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.45; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── DIRECTORY ─────────────────────────────────── -->
+<div id="directory">
+
+  <div class="dir-topbar">
+    <div>
+      <div class="dir-brand">Deschutes Women in Business · June 17, 2026 · Bend, Oregon</div>
+      <div class="dir-heading">Move &amp; Connect: <span class="accent">Leverage</span> · Connection Directory</div>
+    </div>
+  </div>
+
+  <div class="dir-intro">
+    <div class="dir-intro-inner">
+      <div>
+        <div class="dir-cta">Let's support each other.<br><span class="cta-accent">We would love for you all to connect from this board</span> and we can't wait to hear about the momentum it unlocks.</div>
+        <p class="dir-cta-sub" style="margin-top:0.75rem;color:var(--bark);font-size:0.72rem;">This exercise is focused around generosity. This list is not to be added to a marketing campaign or shared beyond this community. While business opportunities may come out of these connections, by accessing this directory you are agreeing not to use these contacts for hard sales outreach.</p>
+      </div>
+      <div class="tag-legend">
+        <div class="tag-legend-title">Tag Definitions</div>
+        <div class="tag-legend-item"><span class="tag-legend-badge tag-grow">Grow</span><span class="tag-legend-desc">Visibility, marketing, clients, sales</span></div>
+        <div class="tag-legend-item"><span class="tag-legend-badge tag-build">Build</span><span class="tag-legend-desc">Operations, systems, hiring, tools</span></div>
+        <div class="tag-legend-item"><span class="tag-legend-badge tag-fund">Fund</span><span class="tag-legend-desc">Cash flow, pricing, investment, finance</span></div>
+        <div class="tag-legend-item"><span class="tag-legend-badge tag-connect">Connect</span><span class="tag-legend-desc">Introductions, referrals, partners</span></div>
+        <div class="tag-legend-item"><span class="tag-legend-badge tag-thought">Thought Partnership</span><span class="tag-legend-desc">Strategy, pivots, coaching, getting unstuck</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="dir-filter-hint-bar">
+    <span>Browse asks and offers below. Filter by tag to find your people.</span>
+  </div>
+
+  <div class="dir-controls">
+    <div class="toggle-group">
+      <button class="toggle-btn active ask-mode" id="btnAsk" onclick="setMode('ask')">Asks</button>
+      <div class="toggle-sep"></div>
+      <button class="toggle-btn offer-mode" id="btnOffer" onclick="setMode('offer')">Offers</button>
+    </div>
+    <input type="text" class="dir-search" id="searchInput" placeholder="Search name, keyword..." oninput="render()">
+    <div class="tag-filters" id="tagFilters">
+      <button class="tag-filter-btn active" data-tag="all" onclick="setTag('all',this)">All</button>
+      <button class="tag-filter-btn" data-tag="grow"    onclick="setTag('grow',this)">Grow</button>
+      <button class="tag-filter-btn" data-tag="build"   onclick="setTag('build',this)">Build</button>
+      <button class="tag-filter-btn" data-tag="fund"    onclick="setTag('fund',this)">Fund</button>
+      <button class="tag-filter-btn" data-tag="connect" onclick="setTag('connect',this)">Connect</button>
+      <button class="tag-filter-btn" data-tag="thought" onclick="setTag('thought',this)">Thought Partnership</button>
+    </div>
+    <span class="filter-hint">Filter by tag</span>
+  </div>
+
+  <div class="dir-body">
+    <div class="dir-meta-row">
+      <div class="dir-count" id="dirCount"></div>
+      <div class="mode-badge ask" id="modeBadge">Viewing Asks</div>
+    </div>
+    <div id="tableWrap"></div>
+  </div>
+
+  <div class="dir-footer">
+    <p>Private directory for June 17, 2026 DWB Move &amp; Connect: Leverage attendees only. When reaching out, mention you connected at the Leverage speed networking event.<br>
+    <a href="https://www.deschuteswomen.com">deschuteswomen.com</a></p>
+  </div>
+
+</div>
+
+<script>
+// ╔═══════════════════════════════════════════════════════════════════════════╗
+// ║  CONFIGURATION — data is fetched from the private DWB Google Sheet       ║
+// ╚═══════════════════════════════════════════════════════════════════════════╝
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxgpQ90-uO-yiXGC9UXLS7s9WFxrXBEvXX_fnbilQ-i63RYFTYMgAC_vEy8NiTSCje6Qg/exec?tab=leverage';
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+let CARDS = [];
+
+// ── LOAD DATA FROM GOOGLE SHEETS ─────────────────────────────────────────────
+async function loadData() {
+  const wrap = document.getElementById('tableWrap');
+  wrap.innerHTML = `<div class="loading-state">
+    <div class="loading-title">Loading Directory…</div>
+    <p class="loading-sub">Fetching the latest data.</p>
+  </div>`;
+
+  try {
+    const resp = await fetch(SHEET_API_URL);
+    const data = await resp.json();
+
+    // Expected sheet columns: Name | Tags | Ask | Offer | Email | Phone
+    CARDS = data.map(row => ({
+      name:  row.name  || '',
+      tags:  (row.tags || '').split(',').map(t => t.trim().toLowerCase()).filter(Boolean),
+      ask:   row.ask   || '',
+      offer: row.offer || '',
+      email: row.email || '',
+      phone: row.phone || '',
+    }));
+
+    render();
+  } catch (err) {
+    wrap.innerHTML = `<div class="empty-state">
+      <div class="empty-title">Unable to Load</div>
+      <p class="empty-sub">Could not reach the directory data. Please try refreshing.</p>
+    </div>`;
+    console.error('Sheet fetch error:', err);
+  }
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let mode       = 'ask';
+let activeTag  = 'all';
+let sortCol    = 'name';
+let sortDir    = 1;
+
+const TAG_META = {
+  grow:    { label: 'Grow',                cls: 'tag-grow' },
+  build:   { label: 'Build',               cls: 'tag-build' },
+  fund:    { label: 'Fund',                cls: 'tag-fund' },
+  connect: { label: 'Connect',             cls: 'tag-connect' },
+  thought: { label: 'Thought Partnership', cls: 'tag-thought' },
+};
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  document.getElementById('btnAsk').classList.toggle('active', m === 'ask');
+  document.getElementById('btnOffer').classList.toggle('active', m === 'offer');
+  const badge = document.getElementById('modeBadge');
+  badge.textContent = m === 'ask' ? 'Viewing Asks' : 'Viewing Offers';
+  badge.className = 'mode-badge ' + m;
+  render();
+}
+
+function setTag(tag, btn) {
+  activeTag = tag;
+  document.querySelectorAll('.tag-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function sortBy(col) {
+  sortDir = sortCol === col ? sortDir * -1 : 1;
+  sortCol = col;
+  render();
+}
+
+// ── FILTER + SORT ─────────────────────────────────────────────────────────────
+function getVisible() {
+  const q       = document.getElementById('searchInput').value.toLowerCase().trim();
+  const textKey = mode === 'ask' ? 'ask' : 'offer';
+
+  let rows = CARDS.filter(c => {
+    if (!c[textKey]) return false;
+    if (activeTag !== 'all' && !c.tags.includes(activeTag)) return false;
+    if (q) {
+      return c.name.toLowerCase().includes(q) ||
+             c[textKey].toLowerCase().includes(q) ||
+             c.tags.some(t => TAG_META[t]?.label.toLowerCase().includes(q));
+    }
+    return true;
+  });
+
+  if (sortCol) {
+    rows = [...rows].sort((a, b) => {
+      const key = sortCol === 'text' ? textKey : sortCol;
+      return (a[key] || '').localeCompare(b[key] || '') * sortDir;
+    });
+  }
+
+  return rows;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  const visible  = getVisible();
+  const wrap     = document.getElementById('tableWrap');
+  const countEl  = document.getElementById('dirCount');
+  const textKey  = mode === 'ask' ? 'ask' : 'offer';
+  const colLabel = mode === 'ask' ? 'Ask' : 'Offer';
+  const total    = CARDS.filter(c => c[textKey]).length;
+
+  countEl.innerHTML = `Showing <strong>${visible.length}</strong> of <strong>${total}</strong> ${colLabel.toLowerCase()}s`;
+
+  if (!visible.length) {
+    wrap.innerHTML = `<div class="empty-state">
+      <div class="empty-title">No Results Found</div>
+      <p class="empty-sub">Try a different keyword or clear your search.</p>
+    </div>`;
+    return;
+  }
+
+  const icon = col => {
+    if (sortCol !== col) return '<span class="sort-icon">⇕</span>';
+    return `<span class="sort-icon">${sortDir === 1 ? '↑' : '↓'}</span>`;
+  };
+
+  let html = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th onclick="sortBy('name')" class="${sortCol==='name'?'sorted':''}">Name${icon('name')}</th>
+      <th onclick="sortBy('text')" class="${sortCol==='text'?'sorted':''}">${colLabel}${icon('text')}</th>
+      <th>Tags</th>
+      <th>Contact</th>
+    </tr></thead><tbody>`;
+
+  visible.forEach((c, i) => {
+    const tagBadges = c.tags.map(t => {
+      const m = TAG_META[t];
+      return m ? `<span class="tag-badge ${m.cls}">${m.label}</span>` : '';
+    }).join('');
+
+    const emailHtml = c.email ? `<a href="mailto:${c.email}">${c.email}</a>` : '';
+    const phoneHtml = c.phone ? `<span>${c.phone}</span>` : '';
+
+    html += `<tr style="animation-delay:${Math.min(i*0.02,0.4)}s">
+      <td class="col-name">${c.name}</td>
+      <td class="col-text">${c[textKey]}</td>
+      <td class="col-tags"><div class="tag-badges">${tagBadges}</div></td>
+      <td class="col-contact">
+        <button class="reveal-btn" onclick="revealContact(this)">View Contact</button>
+        <div class="contact-hidden">
+          ${emailHtml}
+          ${phoneHtml}
+        </div>
+      </td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+  wrap.innerHTML = html;
+}
+
+// ── CONTACT REVEAL ────────────────────────────────────────────────────────
+var currentOpenContact = null;
+
+function revealContact(btn) {
+  var infoDiv = btn.nextElementSibling;
+
+  // Hide previously open contact if different
+  if (currentOpenContact && currentOpenContact !== infoDiv) {
+    currentOpenContact.className = 'contact-hidden';
+    currentOpenContact.previousElementSibling.style.display = 'inline-block';
+  }
+
+  // Toggle current
+  if (infoDiv.className === 'contact-hidden') {
+    infoDiv.className = 'contact-shown';
+    btn.style.display = 'none';
+    currentOpenContact = infoDiv;
+  }
+}
+
+// Initial load
+loadData();
+</script>
+</body>
+</html>
